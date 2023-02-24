@@ -33,9 +33,13 @@ int get_termsize(int *width, int *height) {
 }
 
 long long get_time(void) {
+#if defined(__unix__)
     struct timeval tv;
     gettimeofday(&tv, NULL);
     return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+#elif defined(_WIN32)
+    return GetTickCount();
+#endif
 }
 
 typedef double real_t;
@@ -50,19 +54,19 @@ typedef struct {
 #define re(z) (z).real
 #define im(z) (z).imag
 
-inline complex_t cadd(complex_t lhs, complex_t rhs) {
+static inline complex_t cadd(complex_t lhs, complex_t rhs) {
     return COMPLEX(lhs.real + rhs.real, lhs.imag + rhs.imag);
 }
 
-inline complex_t csquared(complex_t z) {
+static inline complex_t csquared(complex_t z) {
     return COMPLEX(re(z) * re(z) - im(z) * im(z), 2 * re(z) * im(z));
 }
 
-inline real_t clength_squared(complex_t z) {
+static inline real_t clength_squared(complex_t z) {
     return re(z) * re(z) - im(z) * im(z);
 }
 
-inline real_t clength(complex_t z) {
+static inline real_t clength(complex_t z) {
     return sqrt(clength_squared(z));
 }
 
